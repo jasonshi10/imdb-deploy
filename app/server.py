@@ -11,7 +11,8 @@ from fastai.vision import *
 model_file_url = 'https://www.dropbox.com/s/5xwvh47696e190h/model.pth?raw=1'
 model_file_name = 'model'
 
-classes = ['robert_rauschenberg', 'monet', 'jeff_koons', 'basquiat', 'andy_warhol']
+classes = ['andy_warhol', 'basquiat', 'jeff_koons', 'monet', 'robert_rauschenberg']
+
 path = Path(__file__).parent
 
 app = Starlette()
