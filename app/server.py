@@ -34,7 +34,7 @@ async def setup_learner():
     data_clas = TextList.from_folder(path)
     #data_clas.save('tmp_clas')
     #data_clas = TextClasDataBunch.load(path, 'tmp_clas')
-    learn = text_classifier_learner(data_clas, drop_mult=0.5)
+    learn = text_classifier_learner(data_clas, AWD_LSTM, drop_mult=0.5)
     learn.load_encoder(encoder_file_name)
     learn.load(model_file_name)
     return learn
