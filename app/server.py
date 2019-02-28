@@ -31,7 +31,7 @@ async def download_file(url, dest):
 async def setup_learner():
     await download_file(model_file_url, path/'models'/f'{model_file_name}.pth')
     await download_file(encoder_file_url, path/'models'/f'{encoder_file_name}.pth')
-    data_clas = (TextList.from_folder(path, vocab=data_lm.vocab).databunch())
+    data_clas = (TextList.from_folder(path).databunch())
     data_clas.save('tmp_clas')
     data_clas = TextClasDataBunch.load(path, 'tmp_clas')
     learn = text_classifier_learner(data_clas, drop_mult=0.5)
