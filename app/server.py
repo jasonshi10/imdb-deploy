@@ -6,12 +6,13 @@ import uvicorn, aiohttp, asyncio
 from io import BytesIO
 
 from fastai import *
-from fastai.vision import *
+from fastai.text import *
 
-model_file_url = 'https://www.dropbox.com/s/5xwvh47696e190h/model.pth?raw=1'
-model_file_name = 'model'
+model_file_url = ''
+model_file_name = 'imdb'
+encoder_file_name = 'imdb_enc'
 
-classes = ['andy_warhol', 'basquiat', 'jeff_koons', 'monet', 'robert_rauschenberg']
+classes = ['neg', 'pos']
 
 path = Path(__file__).parent
 
@@ -28,9 +29,9 @@ async def download_file(url, dest):
 
 async def setup_learner():
     await download_file(model_file_url, path/'models'/f'{model_file_name}.pth')
-    data_bunch = ImageDataBunch.single_from_classes(path, classes,
-        tfms=get_transforms(), size=224).normalize(imagenet_stats)
-    learn = create_cnn(data_bunch, models.resnet34, pretrained=False)
+    data_clas = TextClasDataBunch.load(path)
+    learn = text_classifier_learner(data_clas, drop_mult=0.5)
+    learn.load_encoder(encoder_file_name)
     learn.load(model_file_name)
     return learn
 
@@ -47,9 +48,8 @@ def index(request):
 @app.route('/analyze', methods=['POST'])
 async def analyze(request):
     data = await request.form()
-    img_bytes = await (data['file'].read())
-    img = open_image(BytesIO(img_bytes))
-    prediction = learn.predict(img)[0]
+    text = await (data['file'].read())
+    prediction = learn.predict(text)
     return JSONResponse({'result': str(prediction)})
 
 if __name__ == '__main__':
