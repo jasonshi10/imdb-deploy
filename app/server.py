@@ -8,8 +8,9 @@ from io import BytesIO
 from fastai import *
 from fastai.text import *
 
-model_file_url = ''
+model_file_url = 'https://www.dropbox.com/s/fsk3wfwpivwimlw/imdb.pth?dl=1'
 model_file_name = 'imdb'
+encoder_file_url = 'https://www.dropbox.com/s/08soznj8n4ccdgh/imdb_enc.pth?dl=1'
 encoder_file_name = 'imdb_enc'
 
 classes = ['neg', 'pos']
@@ -29,6 +30,7 @@ async def download_file(url, dest):
 
 async def setup_learner():
     await download_file(model_file_url, path/'models'/f'{model_file_name}.pth')
+    await download_file(encoder_file_url, path/'models'/f'{encoder_file_name}.pth')
     data_clas = TextClasDataBunch.load(path)
     learn = text_classifier_learner(data_clas, drop_mult=0.5)
     learn.load_encoder(encoder_file_name)
